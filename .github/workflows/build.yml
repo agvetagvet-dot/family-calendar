@@ -26,8 +26,11 @@ jobs:
 
       - name: Build Debug APK
         run: |
-          if [ -d "family_calendar" ]; then
-            cd family_calendar
+          APP_PATH=$(find . -maxdepth 3 -type d -name "app" | head -n 1)
+          if [ -n "$APP_PATH" ]; then
+            PROJECT_ROOT=$(dirname "$APP_PATH")
+            echo "Navigating to project root: $PROJECT_ROOT"
+            cd "$PROJECT_ROOT"
           fi
           gradle wrapper
           chmod +x gradlew
