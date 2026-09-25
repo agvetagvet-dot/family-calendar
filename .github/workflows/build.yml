@@ -3,6 +3,7 @@ name: Build Android APK
 on:
   push:
     branches: [ main, master ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -16,15 +17,14 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
       - name: Build APK
         run: |
-          if [ -d "family_calendar" ]; then
-            cd family_calendar
-          fi
-          gradle wrapper
+          TARGET_DIR=$(find . -name "settings.gradle.kts" -exec dirname {} \;)
+          cd "$TARGET_DIR"
+          gradle wrapper --gradle-version 8.4
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
 
