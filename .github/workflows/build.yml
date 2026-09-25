@@ -16,14 +16,17 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build APK with Gradle
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Build APK
         run: |
-          if [ -f "build.gradle.kts" ]; then
-            gradle assembleDebug
-          elif [ -d "family_calendar" ]; then
+          if [ -d "family_calendar" ]; then
             cd family_calendar
-            gradle assembleDebug
           fi
+          gradle wrapper
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
